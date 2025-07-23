@@ -8,6 +8,9 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 const session = require("express-session");
 
+const isSignedIn = require('./middleware/is-signed-in.js');
+const passUserToView = require('./middleware/pass-user-to-view.js');
+
 // imports logic from auth.js in controllers
 const authController = require("./controllers/auth.js");
 
@@ -31,15 +34,17 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-  })
-);
+  }));
+
+app.use(passUserToView);
 
 app.get("/", async (req, res) => {
   res.render("index.ejs", { user: req.session.user });
 });
 
 
-app.use("/auth", authController);
+app.use("/auth", authController); // these are the auth routes
+app.use(isSignedIn); // middleware
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
