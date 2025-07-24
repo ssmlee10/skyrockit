@@ -42,7 +42,13 @@ app.use(
 app.use(passUserToView);
 
 app.get("/", async (req, res) => {
-  res.render("index.ejs", { user: req.session.user });
+  if (req.session.user) {
+    // redirect signed-in user to their applications index
+    res.redirect(`/users/${req.session.user._id}/applications`);
+  } else {
+    // show the homepage for users who are not signed in
+  res.render("index.ejs");
+  }
 });
 
 
