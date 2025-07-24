@@ -12,7 +12,7 @@
 
     <ul>
       <% applications.forEach((application) => { %>
-        <li><%= application.title %> at <%= application.company %></li>
+        <a href="/users/<%= user._id %>/applications/<%= application._id %>"><li><%= application.title %> at <%= application.company %></a></li>
       <% }); %>
     </ul>
 
