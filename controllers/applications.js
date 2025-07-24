@@ -8,21 +8,21 @@ router.get("/", async (req, res) => {
   try {
     const currentUser = await User.findById(req.session.user._id);
     res.render("applications/index.ejs", {
-      applications : currentUser.applications
+      applications: currentUser.applications,
     });
   } catch (error) {
     console.log(error);
-    res.redirect('/');
+    res.redirect("/");
   }
 });
 
 // GET route for /new
-router.get('/new', async (req, res) => {
-  res.render('applications/new.ejs');
+router.get("/new", async (req, res) => {
+  res.render("applications/new.ejs");
 });
 
 // POST for '/applications
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     // look up the user from req.session
     const currentUser = await User.findById(req.session.user._id);
@@ -35,30 +35,29 @@ router.post('/', async (req, res) => {
 
     //redirect back to the applications index view
     res.redirect(`/users/${currentUser._id}/applications`);
-
   } catch (error) {
     console.log(error);
-    res.redirect('/');
+    res.redirect("/");
   }
-})
+});
 
 // GET to /applications/:applicationsId
-router.get('/:applicationId', async (req, res) => {
+router.get("/:applicationId", async (req, res) => {
   try {
     const currentUser = await User.findById(req.session.user._id);
     const application = currentUser.applications.id(req.params.applicationId);
 
-  res.render('applications/show.ejs', {
-    application: application,
-  });
-} catch(error) {
+    res.render("applications/show.ejs", {
+      application: application,
+    });
+  } catch (error) {
     console.log(error);
-    res.redirect('/');
+    res.redirect("/");
   }
 });
 
 // DELETE /applications/:applicationId
-router.delete(':applicationId', async (req, res) => {
+router.delete("/:applicationId", async (req, res) => {
   try {
     const currentUser = await User.findById(req.session.user._id);
 
@@ -67,12 +66,29 @@ router.delete(':applicationId', async (req, res) => {
     await currentUser.save();
 
     res.redirect(`/users/${currentUser._id}/applications`);
+    const curentUser = await User.findById(req.session.user._id);
+    const application = currentUser.applications.id(req.params.applicationId);
+    res.render("applications/edit.ejs", {
+      application: application,
+    });
+  } catch (error) {
+    console.log(error);
+    res.redirect("/");
+  }
+});
 
+// edit functionality
+router.get('/:applicationId/edit', async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.session.user._id);
+    const application = currentUser.applications.id(req.params.applicationId);
+    res.render('applications/edit.ejs', {
+      application: application,
+    });
   } catch (error) {
     console.log(error);
     res.redirect('/');
   }
 });
-
 
 module.exports = router;
